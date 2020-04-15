@@ -1,6 +1,6 @@
-name = "{{project-name}}"
+name = "fullstack-challange-estony"
 type = "javascript"
-account_id = ""
+account_id = "474e12089aa51e223d6f425e863570a2"
 workers_dev = true
 route = ""
 zone_id = ""

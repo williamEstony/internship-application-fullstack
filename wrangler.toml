@@ -1,14 +1,18 @@
 name = "fullstack_challenge_estony"
-type = "webpack"
+type = "javascript"
 account_id = "$CF_ACCOUNT_ID"
+zone_id = "$CF_ZONE_ID"
 
+#To run wrangler in the development environment run:
+#CF_ACCOUNT_ID=myAccountID wrangler dev
+
+#To deploy the staging worker run the following command: 
+#CF_ACCOUNT_ID=myAccountID wrangler publish --env production
 [env.staging]
 workers_dev = true
 
-
+#To deploy the production worker to a personal domain run:
+#CF_ACCOUNT_ID=myAccountID CF_ZONE_ID=myZoneID
+#wrangler publish --env production
 [env.production]
-#Wanted to use environment variable $CF_ZONE_ID, but kept getting the following error:
-#Error: ⚠️  Code 7000: No route for that URI.
-
-zone_id = "a763e5fca57bde9c0d8a7f2cb2e47b07" 
 route = "fullstack.browdiegram.us"

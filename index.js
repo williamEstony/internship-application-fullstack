@@ -1,6 +1,12 @@
+/**
+ * @author Will Estony
+ * @version 0.0.2
+ */
+
 addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request))
 })
+
 
 class ElementHandler {
   constructor(styleMap) {
@@ -21,45 +27,55 @@ class ElementHandler {
 }
 
 async function handleRequest(request) {
-  const url = 'https://cfw-takehome.developers.workers.dev/api/variants';
+  const url = 'https://cfw-takehome.developers.workers.dev/api/variant';
   const key = 'variants'; //name of the key in the JSON object pointing to the array of urls value
-  try{
-    let resp = checkErrors(await fetch(url));
+  //let cookieString = request.headers.get('Cookie');
+  //console.log(cookieString);
+  
+  //const randomStuff = `randomcookie=${Math.random()}; Expires=Wed, 21 Oct 2021 07:28:00 GMT; Path='/';`
+  let resp = await fetch(url);
+    
+  if(!isError(resp)){
     let json = await resp.json();
     let urls = json[key];
     return distRequests(urls);
-  }catch(error){
-    return new Response(error.message + ' Error', {
-      headers: { 'content-type': 'text/plain' },
+  }else{
+    return new Response(resp.status + ' Error', {
+      headers: { 'content-type': 'text/plain' }
     })
   }
 }
 
 async function distRequests(urls){
-  //Get a random number between 0 and 1 inclusive
-  //to represent the index of two possible variants
-  let variant = Math.floor(Math.random() * 2);
-  let resp =  await fetch(urls[variant]);
-  const styleMap = getStyleMap();
-  return new HTMLRewriter().on('*', new ElementHandler(styleMap['variant' + variant])).transform(resp)
-}
 
-async function getStyleMap(){
-  let request = new Request("./styleMap.json");
-  await fetch(request)
-    .then(function(resp){
-      return resp.json();
-    })
-}
+    /* Get a random number between 0 and 1 inclusive
+       to represent the index of two possible variants */
+    let variant = Math.floor(Math.random() * 2);
 
-function checkErrors(request){
+    let resp = await fetch(urls[variant]);
+
+    if(!isError(resp)){
+      const styleMap = getStyleMap();
+      return new HTMLRewriter().on('*', new ElementHandler(styleMap['variant' + variant])).transform(resp)
+    }else{
+        return new Response(resp.status + ' Error', {
+          headers: { 'content-type': 'text/plain' }
+      })
+    }
+  }
+  
+//return bool
+function isError(request){
   if (!request.ok) {
-    throw Error(request.status);
+    return true;
   }else{
-    return request;
+    return false;
   }
 }
 
+/* 
+
+*/
 function getStyleMap(){
   return {
     'variant0': {
@@ -85,7 +101,7 @@ function getStyleMap(){
     },
     'variant1': {
       title: {
-        value: 'Will Estony\'s Favorite Movies',
+        value: 'Will Estony\'s Movie Picks',
         id: null
       },
       h1:{

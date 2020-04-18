@@ -1,0 +1,40 @@
+{
+    "0": {
+      "name": "variant 1",
+      "title": {
+        "value": "Wills Variant 1",
+        "id": null
+      },
+      "h1":{
+        "value": "Wills Variant 1",
+        "id": "title"
+      },
+      "p":{
+        "value": "Wills Variant 1",
+        "id": "description"
+      },
+      "a": {
+        "value": "Wills Variant 1",
+        "id": "url"
+      }
+    },
+    "1": {
+      "name": "variant 2",
+      "title": {
+        "value": "Wills Variant 2",
+        "id": null
+      },
+      "h1":{
+        "value": "Wills Variant 2",
+        "id": "title"
+      },
+      "p": {
+        "value": "Wills Variant 2",
+        "id": "description"
+      },
+      "a": {
+        "value": "Wills Variant 2",
+        "id": "url"
+      }
+    }
+  }

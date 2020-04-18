@@ -1,6 +1,14 @@
-name = "fullstack-challange-estony"
-type = "javascript"
-account_id = "474e12089aa51e223d6f425e863570a2"
+name = "fullstack_challenge_estony"
+type = "webpack"
+account_id = "$CF_ACCOUNT_ID"
+
+[env.staging]
 workers_dev = true
-route = ""
-zone_id = ""
+
+
+[env.production]
+#Wanted to use environment variable $CF_ZONE_ID, but kept getting the following error:
+#Error: ⚠️  Code 7000: No route for that URI.
+
+zone_id = "a763e5fca57bde9c0d8a7f2cb2e47b07" 
+route = "fullstack.browdiegram.us"

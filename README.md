@@ -21,3 +21,24 @@ The app can be viewed at two different locations:
 
 - [Workers Dev](https://fullstack_challenge_estony-staging.williamestony.workers.dev)
 - [Personal Domain](https://fullstack.browdiegram.us)
+
+
+## Running this project with the wrangler CLI
+
+This project was developed using the command line tool [wrangler] (https://github.com/cloudflare/wrangler).
+As such, it requires a .toml file to be included in the directory where the project is built. To avoid any
+security problems, I used environment variables $CF_ACCOUNT_ID and $CF_ZONE_ID to inject the zone id and 
+account id into the file at the command line when wrangler commands are executed. Here are some examples of 
+how to run them.
+
+- To run wrangler in the development environment run: 
+
+    `#CF_ACCOUNT_ID=myAccountID wrangler dev`
+
+- To deploy the staging worker run the following command: 
+
+    `CF_ACCOUNT_ID=myAccountID wrangler publish --env production`
+
+- To deploy production worker to a personal domain run:
+
+    `CF_ACCOUNT_ID=myAccountID CF_ZONE_ID=myZoneID wrangler publish --env production`

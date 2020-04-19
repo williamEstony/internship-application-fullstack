@@ -31,6 +31,7 @@ async function handleRequest(request) {
   const cookie = request.headers.get('cookie');
   const persistentUrl = hasCookie(cookie, 'url');
   if(persistentUrl){
+    console.log("USING COOKIE");
     const styleMap = getStyleMap();
     let response = await fetch(persistentUrl);
     const variant = parseInt(persistentUrl.substring(persistentUrl.length - 1));
@@ -40,7 +41,7 @@ async function handleRequest(request) {
     const key = 'variants'; //name of the key in the JSON object pointing to the array of urls value
     let response = await fetch(url);
     if(!isError(response)){
-      let json = await resp.json();
+      let json = await response.json();
       let urls = json[key];
       return distRequests(urls);
     }else{
@@ -71,12 +72,12 @@ async function distRequests(urls){
   let variant = Math.floor(Math.random() * 2);
   let response = await fetch(urls[variant]);
   response = new Response(response.body, response)
-  response.headers.append('Set-Cookie', `url=${urls[variant]}; path=/`);
+  response.headers.append('Set-Cookie', `url=${urls[variant]}; Expires=Tue, 11 Aug 2020 00:00:01 GMT`);
   if(!isError(response)){
     const styleMap = getStyleMap();
     return new HTMLRewriter().on('*', new ElementHandler(styleMap['variant' + (variant + 1)])).transform(response)
   }else{
-      return new Response(resp.status + ' Error', {
+      return new Response(response.status + ' Error', {
         headers: { 'content-type': 'text/plain' }
     })
   }

@@ -20,4 +20,4 @@ Additionally, the app uses a permanent cookie to persist which url is chosen unt
 The app can be viewed at two different locations:
 
 - [Workers Dev](https://fullstack_challenge_estony-staging.williamestony.workers.dev)
-- [Personal Domain](fulllstack.browdiegram.us)
+- [Personal Domain](https://fulllstack.browdiegram.us)

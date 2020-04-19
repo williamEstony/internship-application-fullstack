@@ -33,7 +33,7 @@ how to run them.
 
 - To run wrangler in the development environment run: 
 
-    `#CF_ACCOUNT_ID=myAccountID wrangler dev`
+    `CF_ACCOUNT_ID=myAccountID wrangler dev`
 
 - To deploy the staging worker run the following command: 
 

@@ -27,44 +27,62 @@ class ElementHandler {
 }
 
 async function handleRequest(request) {
-  const url = 'https://cfw-takehome.developers.workers.dev/api/variant';
-  const key = 'variants'; //name of the key in the JSON object pointing to the array of urls value
-  //let cookieString = request.headers.get('Cookie');
-  //console.log(cookieString);
   
-  //const randomStuff = `randomcookie=${Math.random()}; Expires=Wed, 21 Oct 2021 07:28:00 GMT; Path='/';`
-  let resp = await fetch(url);
-    
-  if(!isError(resp)){
-    let json = await resp.json();
-    let urls = json[key];
-    return distRequests(urls);
+  const cookie = request.headers.get('cookie');
+  const persistentUrl = hasCookie(cookie, 'url');
+  if(persistentUrl){
+    const styleMap = getStyleMap();
+    let response = await fetch(persistentUrl);
+    const variant = parseInt(persistentUrl.substring(persistentUrl.length - 1));
+    return new HTMLRewriter().on('*', new ElementHandler(styleMap['variant' + variant])).transform(response)
   }else{
-    return new Response(resp.status + ' Error', {
-      headers: { 'content-type': 'text/plain' }
+    const url = 'https://cfw-takehome.developers.workers.dev/api/variants';
+    const key = 'variants'; //name of the key in the JSON object pointing to the array of urls value
+    let response = await fetch(url);
+    if(!isError(response)){
+      let json = await resp.json();
+      let urls = json[key];
+      return distRequests(urls);
+    }else{
+      return new Response(response.status + ' Error', {
+        headers: { 'content-type': 'text/plain' }
+      })
+    }
+  }
+}
+
+function hasCookie(cookie, key){
+  if(cookie){
+    let cookies = cookie.split(';')
+    for(var i = 0; i < cookies.length; i++){
+      let cookieKey = cookies[i].split('=')[0].trim();
+      if(cookieKey === key){
+        return cookies[i].split('=')[1].trim()
+      }
+    }
+  }
+  return null;
+}
+async function distRequests(urls){
+  /* 
+    Get a random number between 0 and 1 inclusive
+    to represent the index of two possible variants 
+  */
+  let variant = Math.floor(Math.random() * 2);
+  let response = await fetch(urls[variant]);
+  response = new Response(response.body, response)
+  response.headers.append('Set-Cookie', `url=${urls[variant]}; path=/`);
+  if(!isError(response)){
+    const styleMap = getStyleMap();
+    return new HTMLRewriter().on('*', new ElementHandler(styleMap['variant' + (variant + 1)])).transform(response)
+  }else{
+      return new Response(resp.status + ' Error', {
+        headers: { 'content-type': 'text/plain' }
     })
   }
 }
 
-async function distRequests(urls){
 
-    /* Get a random number between 0 and 1 inclusive
-       to represent the index of two possible variants */
-    let variant = Math.floor(Math.random() * 2);
-
-    let resp = await fetch(urls[variant]);
-
-    if(!isError(resp)){
-      const styleMap = getStyleMap();
-      return new HTMLRewriter().on('*', new ElementHandler(styleMap['variant' + variant])).transform(resp)
-    }else{
-        return new Response(resp.status + ' Error', {
-          headers: { 'content-type': 'text/plain' }
-      })
-    }
-  }
-  
-//return bool
 function isError(request){
   if (!request.ok) {
     return true;
@@ -78,7 +96,7 @@ function isError(request){
 */
 function getStyleMap(){
   return {
-    'variant0': {
+    'variant1': {
       title: {
         value: 'Will Estony\'s Website',
         id: null
@@ -99,7 +117,7 @@ function getStyleMap(){
         }
       }
     },
-    'variant1': {
+    'variant2': {
       title: {
         value: 'Will Estony\'s Movie Picks',
         id: null

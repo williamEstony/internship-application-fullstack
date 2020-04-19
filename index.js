@@ -31,11 +31,17 @@ async function handleRequest(request) {
   const cookie = request.headers.get('cookie');
   const persistentUrl = hasCookie(cookie, 'url');
   if(persistentUrl){
-    console.log("USING COOKIE");
-    const styleMap = getStyleMap();
+    
     let response = await fetch(persistentUrl);
-    const variant = parseInt(persistentUrl.substring(persistentUrl.length - 1));
-    return new HTMLRewriter().on('*', new ElementHandler(styleMap['variant' + variant])).transform(response)
+    if(!isError(response)){
+      const styleMap = getStyleMap();
+      const variant = parseInt(persistentUrl.substring(persistentUrl.length - 1));
+      return new HTMLRewriter().on('*', new ElementHandler(styleMap['variant' + variant])).transform(response)
+    }else{
+      return new Response(response.status +  ' Error: ' + getErrorMessages(response.status), {
+        headers: { 'content-type': 'text/plain' }
+      })
+    }
   }else{
     const url = 'https://cfw-takehome.developers.workers.dev/api/variants';
     const key = 'variants'; //name of the key in the JSON object pointing to the array of urls value
@@ -45,7 +51,7 @@ async function handleRequest(request) {
       let urls = json[key];
       return distRequests(urls);
     }else{
-      return new Response(response.status + ' Error', {
+      return new Response(response.status +  ' Error: ' + getErrorMessages(response.status), {
         headers: { 'content-type': 'text/plain' }
       })
     }
@@ -64,6 +70,7 @@ function hasCookie(cookie, key){
   }
   return null;
 }
+
 async function distRequests(urls){
   /* 
     Get a random number between 0 and 1 inclusive
@@ -77,7 +84,7 @@ async function distRequests(urls){
     const styleMap = getStyleMap();
     return new HTMLRewriter().on('*', new ElementHandler(styleMap['variant' + (variant + 1)])).transform(response)
   }else{
-      return new Response(response.status + ' Error', {
+      return new Response(response.status +  ' Error: ' + getErrorMessages(response.status), {
         headers: { 'content-type': 'text/plain' }
     })
   }
@@ -139,5 +146,28 @@ function getStyleMap(){
         }
       }
     }
+  }
+}
+
+function getErrorMessages(errorCode){
+
+  if(errorCode == 400){
+    return 'Bad Request';
+  }else if(errorCode == 401){
+    return 'Unauthorized Request';
+  }else if(errorCode == 403){
+    return 'Forbidden';
+  }else if(errorCode == 404){
+    return 'Page Not Found';
+  }else if(errorCode == 500){
+    return 'Internal Server Error';
+  }else if(errorCode == 502){
+    return 'Bad Gateway';
+  }else if(errorCode == 503){
+    return 'Service Unavailable';
+  }else if(errorCode == 504){
+    return 'Gateway Timeout';
+  }else{
+    return 'Unknown Error';
   }
 }

@@ -174,7 +174,8 @@ function hasCookie(cookie, key) {
 /**
  * Returns a map of keys and values for the two url variants and their
  * respective stylings. While this could have been stored in a
- * global variable, it looks cleaner putting it in a function.
+ * global variable, it looks cleaner putting it in a function. The next step/idea
+ * would be to store this in a separate file in the same directory.
  * 
  * @return {Map} a mapping of DOM tags with their respective new values.
  */

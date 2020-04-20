@@ -25,7 +25,7 @@ The app can be viewed at two different locations:
 
 ## Running this project with the wrangler CLI
 
-This project was developed using the command line tool [wrangler] (https://github.com/cloudflare/wrangler).
+This project was developed using the command line tool [wrangler](https://github.com/cloudflare/wrangler).
 As such, it requires a .toml file to be included in the directory where the project is built. To avoid any
 security problems, I used environment variables $CF_ACCOUNT_ID and $CF_ZONE_ID to inject the zone id and 
 account id into the file at the command line when wrangler commands are executed. Here are some examples of 
